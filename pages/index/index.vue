@@ -1,52 +1,30 @@
 <template>
-	<view class="app_content">
-		
+	<view class="main_content">
 		<view class="uni-margin-wrap">
 			<swiper class="swiper" circular :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
-				<swiper-item>
-					<view class="swiper-item uni-bg-red">A</view>
+				<swiper-item v-for="(item,index) in banner_list">
+					<view class="swiper-item uni-bg-red">
+						<image :src="getImgPath(item.img)" mode="aspectFill" @error="imageError"></image>
+					</view>
+				</swiper-item>
+				<!-- <swiper-item>
+					<view class="swiper-item uni-bg-green"></view>
 				</swiper-item>
 				<swiper-item>
-					<view class="swiper-item uni-bg-green">B</view>
-				</swiper-item>
-				<swiper-item>
-					<view class="swiper-item uni-bg-blue">C</view>
-				</swiper-item>
+					<view class="swiper-item uni-bg-blue"></view>
+				</swiper-item> -->
 			</swiper>
 		</view>
 		
-		<view class="index_article_list">
-			<view class="item">
-				<view class="item_l">
-					<image src="http://api.uniapp.com/upload/banner/banner_1.jpg" mode="aspectFill"></image>
+		
+		<view class="article_list">
+			<view class="article_item" v-for="(item,index) in banner_list" :key="item.banner_id">
+				<view class="article_left">
+					<image class="article_face" :src="getImgPath(item.img)" mode="aspectFill" @error="imageError"></image>
 				</view>
-				<view class="item_r">
-					<view class="article_title">文章标题</view>
-					<view class="article_desc">文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					</view>
-				</view>
-			</view>
-			<view class="item">
-				<view class="item_l">
-					<image src="http://api.uniapp.com/upload/banner/banner_2.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="item_r">
-					<view class="article_title">文章标题</view>
-					<view class="article_desc">文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					</view>
-				</view>
-			</view>
-			<view class="item">
-				<view class="item_l">
-					<image src="http://api.uniapp.com/upload/banner/banner_3.jpg" mode="aspectFill"></image>
-				</view>
-				<view class="item_r">
-					<view class="article_title">文章标题</view>
-					<view class="article_desc">文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介文章简介
-					</view>
+				<view class="article_right">
+					<view class="article_title">测试文章标题{{item.title}}</view>
+					<view class="article_desc">测试文章详情。。。。。</view>
 				</view>
 			</view>
 		</view>
@@ -58,32 +36,81 @@
 	export default {
 		data() {
 			return {
+				title: '领路君',
 				background: ['color1', 'color2', 'color3'],
 				indicatorDots: true,
 				autoplay: true,
 				interval: 2000,
-				duration: 500
+				duration: 500,
+				banner_list:[],
 			}
 		},
 		onLoad() {
-
+			this.get_banner_list();
 		},
 		methods: {
-
+			getImgPath(path) {
+				return 'http://s1.linglujun.com'+path;
+			},
+			imageError: function(e) {
+				console.error('image发生error事件，携带值为' + e.detail.errMsg)
+			},
+			get_banner_list: function(){
+				uni.request({
+				    url: 'http://h5.linglujun.com/api/index/banner',
+				    data: {
+				        text: 'uni.request'
+				    },
+				    header: {
+				        'custom-header': 'hello' //自定义请求头信息
+				    },
+				    success: (res) => {
+						this.banner_list = res.data.data;
+				    },
+					complete(res) {
+				    	console.log('complatea',res)
+				    }
+				});
+			}
 		}
 	}
 </script>
 
 <style>
-	.app_content {
+	.article_list {
+		width: 100%;
+		/* background-color: #007AFF; */
+	}
+	.article_item {
+		margin:30rpx 30rpx;
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+	}
+	.article_item .article_left {
+		width: 300rpx;
+		height: 150rpx;
+	}
+	.article_item .article_face {
+		width: 100%;
+		height: 100%;
+		border-radius: 20rpx;
+	}
+	.article_item .article_right {
+		width: 100%;
+		padding: 0 0 0 30rpx;
+	}
+	
+	.main_content {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 	}
+	
 	.uni-margin-wrap {
 		width:690rpx;
-		margin:30rpx 30rpx 0 30rpx;
+		margin:0 30rpx;
 	}
 	.swiper {
 		height: 300rpx;
@@ -95,59 +122,29 @@
 		text-align: center;
 	}
 	
-	.index_article_list {
-		width:690rpx;
-		margin:30rpx 30rpx 0 30rpx;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-	}
-	
-	.item {
-		width: 100%;
-		height: auto;
-		display: flex;
-		flex-direction: row;
-		margin-bottom: 30rpx;
-	}
-	
-	.item .item_l {
-		width: 30%;
-	}
-	
-	.item .item_l image {
+	.swiper-item image {
 		width: 100%;
 		height: 100%;
 	}
 	
-	.item .item_r {
-		width: 65%;
-		display: flex;
-		flex-direction: column;
-		margin-left:30rpx;
+	.swiper-list {
+		margin-top: 40rpx;
+		margin-bottom: 0;
 	}
 	
-	.item .item_r .article_title {
-		display: -webkit-box;
-		overflow: hidden;
-		white-space: normal !important;
-		text-overflow: ellipsis;
-		word-wrap: break-word;
-		-webkit-line-clamp: 1;
-		-webkit-box-orient: vertical
+	.uni-common-mt{
+		margin-top:60rpx;
+		position:relative;
 	}
 	
-	.item .item_r .article_desc {
-		display: -webkit-box;
-		overflow: hidden;
-		white-space: normal !important;
-		text-overflow: ellipsis;
-		word-wrap: break-word;
-		-webkit-line-clamp: 3;
-		-webkit-box-orient: vertical
+	.info {
+		position: absolute;
+		right:20rpx;
 	}
 	
-	
+	.uni-padding-wrap {
+	    width:550rpx;
+	    padding:0 100rpx;
+	}
 	
 </style>
