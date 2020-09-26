@@ -7,15 +7,8 @@
 						<image :src="getImgPath(item.img)" mode="aspectFill" @error="imageError"></image>
 					</view>
 				</swiper-item>
-				<!-- <swiper-item>
-					<view class="swiper-item uni-bg-green"></view>
-				</swiper-item>
-				<swiper-item>
-					<view class="swiper-item uni-bg-blue"></view>
-				</swiper-item> -->
 			</swiper>
 		</view>
-		
 		
 		<view class="article_list">
 			<view class="article_item" v-for="(item,index) in banner_list" :key="item.banner_id">
@@ -24,7 +17,7 @@
 				</view>
 				<view class="article_right">
 					<view class="article_title">测试文章标题{{item.title}}</view>
-					<view class="article_desc">测试文章详情。。。。。</view>
+					<view class="article_desc">测试文章详情。</view>
 				</view>
 			</view>
 		</view>
@@ -36,7 +29,7 @@
 	export default {
 		data() {
 			return {
-				title: '领路君',
+				title: '测试',
 				background: ['color1', 'color2', 'color3'],
 				indicatorDots: true,
 				autoplay: true,
@@ -46,7 +39,11 @@
 			}
 		},
 		onLoad() {
-			this.get_banner_list();
+			var that = this;
+			that.get_banner_list();
+			uni.setNavigationBarTitle({
+			    title: that.title,
+			});
 		},
 		methods: {
 			getImgPath(path) {
